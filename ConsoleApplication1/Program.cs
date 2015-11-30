@@ -14,15 +14,12 @@ namespace ConsoleApplication1
                 new KeyValuePair<int, string>(10, "aphid")
             };
 
-            var testClass = new TestClass(int.MaxValue, fooList);
-            testClass.AsyncPrintNumbers();
-            do
+            var testClass = new TestClass(4096, fooList);
+
+            foreach (var num in testClass.ExpandMyMind())
             {
-                foreach (var num in testClass.ResultList)
-                {
-                    System.Console.WriteLine(num);
-                }
-            } while (!testClass.IsComplete);
+                System.Console.WriteLine(num);
+            }
             
             System.Console.ReadKey();
         }
