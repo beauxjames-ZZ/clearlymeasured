@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SharedLibrary;
 
@@ -45,11 +46,31 @@ namespace EarthShatteringTests
         [TestMethod]
         public void test_stability_over_time()
         {
-            var testClass = new TestClass(4096);
+            var startTime = DateTime.Now;
+            var testClass = new TestClass(int.MaxValue);
+            testClass.NumStrPairs = new List<KeyValuePair<int, string>>
+            {
+                new KeyValuePair<int, string>(2, "foo"),
+                new KeyValuePair<int, string>(10, "bar")
+            };
 
-            var foo = testClass.ExpandMyMind().ToList();
+            var i = 1;
+            foreach (var s in testClass.ExpandMyMind())
+            {
+                if(i%2 == 0 && i%10 != 0)
+                    Assert.AreEqual("foo", s);
+                if(i%10 == 0)
+                    Assert.AreEqual("foo bar", s);
 
+                Thread.Sleep(1000);
 
+                if (DateTime.Now.Subtract(startTime).TotalSeconds > 5)
+                {
+                    throw new AssertInconclusiveException("So far so good, but the result list is too long to keep it rolling");
+                }
+
+                i++;
+            }
         }
     }
 }
